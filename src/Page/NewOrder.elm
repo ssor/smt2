@@ -6,6 +6,7 @@ module Page.NewOrder exposing
     , handlePrintOrder
     , inputControlsForAddOrder
     , productCountInOrderChanged
+    , resetAutoClearProductsInOrderAfterPrint
     , resetOrder
     , searchProductById
     )
@@ -95,7 +96,11 @@ handlePrintOrder model =
                 </div>
         """
     in
-    ( model, printOrder (tableHead ++ tableBody ++ spans) )
+    if model.autoClearProducts then
+        ( { model | newOrderPrepare = initOrderPrepare }, printOrder (tableHead ++ tableBody ++ spans) )
+
+    else
+        ( model, printOrder (tableHead ++ tableBody ++ spans) )
 
 
 searchProductById : Model -> String -> ( Model, Cmd Msg )
@@ -176,7 +181,7 @@ inputControlsForAddOrder model =
     div []
         [ inputForOrderItems model
         , br [] []
-        , orderItemsTable model.newOrderPrepare
+        , orderItemsTable model.newOrderPrepare model.autoClearProducts
         ]
 
 
@@ -280,8 +285,13 @@ inputProduct id name attr count =
         ]
 
 
-orderItemsTable : OrderPrepare -> Html Msg
-orderItemsTable prepare =
+resetAutoClearProductsInOrderAfterPrint : Bool -> Model -> ( Model, Cmd Msg )
+resetAutoClearProductsInOrderAfterPrint value model =
+    ( { model | autoClearProducts = value }, Cmd.none )
+
+
+orderItemsTable : OrderPrepare -> Bool -> Html Msg
+orderItemsTable prepare autoClearProducts =
     div []
         [ div []
             [ h4 [] [ text "配货单列表" ]
@@ -299,6 +309,14 @@ orderItemsTable prepare =
                 , onClick ResetOrder
                 ]
                 [ text "清空" ]
+            , input
+                [ type_ "checkbox"
+                , checked autoClearProducts
+                , onCheck ResetAutoClearProductsInOrderAfterPrint
+                , style "margin-left" "12px"
+                ]
+                []
+            , label [] [ text "自动清空" ]
             ]
         , div [ id "mytable" ]
             [ table [ class "table" ]
@@ -352,34 +370,6 @@ inputForOrderItem item =
             ]
             [ text "删除" ]
         ]
-
-
-
--- giftTable : OrderPrepare -> Html Msg
--- giftTable prepare =
---     table [ class "table", style "width" "100%" ]
---         [ --caption [] [ text "赠品列表" ]
---           thead []
---             [ tr []
---                 [ th []
---                     [ abbr
---                         []
---                         [ text "名称" ]
---                     ]
---                 , th []
---                     [ abbr
---                         []
---                         [ text "属性" ]
---                     ]
---                 , th []
---                     [ abbr
---                         []
---                         [ text "管理" ]
---                     ]
---                 ]
---             ]
---         , tbody [] (List.map giftItem prepare.giftList)
---         ]
 
 
 giftItem : Maybe String -> Html Msg

@@ -147,6 +147,7 @@ initialModel skuRaw =
     , page = PageHome
     , giftList = defaultGiftList
     , time = Nothing
+    , autoClearProducts = True
     }
 
 
@@ -166,6 +167,9 @@ update msg model =
 
         AddNewItemToOrder ->
             addNewItemToOrder model
+
+        ResetAutoClearProductsInOrderAfterPrint value ->
+            resetAutoClearProductsInOrderAfterPrint value model
 
         DeleteOrderItem code ->
             deleteOrderItem code model

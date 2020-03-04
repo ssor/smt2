@@ -6,12 +6,13 @@ module Model exposing
 
 import File exposing (File)
 import File.Select as Select
+import Http exposing (..)
 import Order exposing (..)
 import OrderPrepare exposing (..)
 import RemoteData exposing (WebData)
 import Sku exposing (..)
 import Time exposing (..)
-import Http exposing (..)
+
 
 type alias Model =
     { orderList : List Order.Order
@@ -20,6 +21,7 @@ type alias Model =
     , newOrderPrepare : OrderPrepare
     , giftList : List String
     , time : Maybe Time.Posix
+    , autoClearProducts : Bool
 
     -- , csv : Maybe String
     }
@@ -49,3 +51,4 @@ type Msg
     | CsvSelected File
     | CsvLoaded String
     | PatchPostSkuResponse (Result Http.Error String)
+    | ResetAutoClearProductsInOrderAfterPrint Bool

@@ -5578,7 +5578,7 @@ var $author$project$App$initialModel = function (skuRaw) {
 			return $author$project$Sku$decodeSkuListFromString(jsonRawString);
 		}
 	}();
-	return {giftList: $author$project$OrderPrepare$defaultGiftList, newOrderPrepare: $author$project$OrderPrepare$initOrderPrepare, orderList: _List_Nil, page: $author$project$Model$PageHome, skuList: skuList, time: $elm$core$Maybe$Nothing};
+	return {autoClearProducts: true, giftList: $author$project$OrderPrepare$defaultGiftList, newOrderPrepare: $author$project$OrderPrepare$initOrderPrepare, orderList: _List_Nil, page: $author$project$Model$PageHome, skuList: skuList, time: $elm$core$Maybe$Nothing};
 };
 var $author$project$App$init = function (flags) {
 	return _Utils_Tuple2(
@@ -6171,7 +6171,14 @@ var $author$project$Page$NewOrder$handlePrintOrder = function (model) {
 		' ',
 		A2($elm$core$List$map, trGenerator, model.newOrderPrepare.itemsForNewOrder));
 	var spans = '\r\n        </table>\r\n                <div>\r\n                    <span class="xianweibu">纤维布</span>\r\n                    <span class="tongbozhi">铜箔纸包装</span>\r\n                    <span class="jiachangluosi">加长螺丝</span>\r\n                    <span class="peihuoyuan">配货员</span>\r\n                    <span class="shenheyuan">审核员</span>\r\n                </div>\r\n        ';
-	return _Utils_Tuple2(
+	return model.autoClearProducts ? _Utils_Tuple2(
+		_Utils_update(
+			model,
+			{newOrderPrepare: $author$project$OrderPrepare$initOrderPrepare}),
+		$author$project$Ports$printOrder(
+			_Utils_ap(
+				tableHead,
+				_Utils_ap(tableBody, spans)))) : _Utils_Tuple2(
 		model,
 		$author$project$Ports$printOrder(
 			_Utils_ap(
@@ -6996,6 +7003,14 @@ var $author$project$Page$NewOrder$productCountInOrderChanged = F2(
 				}),
 			$elm$core$Platform$Cmd$none);
 	});
+var $author$project$Page$NewOrder$resetAutoClearProductsInOrderAfterPrint = F2(
+	function (value, model) {
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{autoClearProducts: value}),
+			$elm$core$Platform$Cmd$none);
+	});
 var $author$project$Page$NewOrder$resetOrder = function (model) {
 	return _Utils_Tuple2(
 		_Utils_update(
@@ -7068,6 +7083,9 @@ var $author$project$App$update = F2(
 				return $author$project$App$toAddOrderPage(model);
 			case 'AddNewItemToOrder':
 				return $author$project$Page$NewOrder$addNewItemToOrder(model);
+			case 'ResetAutoClearProductsInOrderAfterPrint':
+				var value = msg.a;
+				return A2($author$project$Page$NewOrder$resetAutoClearProductsInOrderAfterPrint, value, model);
 			case 'DeleteOrderItem':
 				var code = msg.a;
 				return A2($author$project$Page$NewOrder$deleteOrderItem, code, model);
@@ -7456,9 +7474,33 @@ var $author$project$Page$NewOrder$inputForOrderItems = function (model) {
 	}
 };
 var $author$project$Model$PrintOrder = {$: 'PrintOrder'};
+var $author$project$Model$ResetAutoClearProductsInOrderAfterPrint = function (a) {
+	return {$: 'ResetAutoClearProductsInOrderAfterPrint', a: a};
+};
 var $author$project$Model$ResetOrder = {$: 'ResetOrder'};
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
 var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
+var $elm$html$Html$Events$targetChecked = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'checked']),
+	$elm$json$Json$Decode$bool);
+var $elm$html$Html$Events$onCheck = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'change',
+		A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetChecked));
+};
 var $author$project$Model$DeleteGift = function (a) {
 	return {$: 'DeleteGift', a: a};
 };
@@ -7587,135 +7629,153 @@ var $author$project$Page$NewOrder$orderItemsTableBody = function (prepare) {
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$html$Html$th = _VirtualDom_node('th');
 var $elm$html$Html$thead = _VirtualDom_node('thead');
-var $author$project$Page$NewOrder$orderItemsTable = function (prepare) {
-	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$h4,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('配货单列表')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('tertiary small'),
-								A2($elm$html$Html$Attributes$style, 'width', '80px'),
-								$elm$html$Html$Events$onClick($author$project$Model$PrintOrder)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('打印')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('secondary small'),
-								A2($elm$html$Html$Attributes$style, 'width', '80px'),
-								$elm$html$Html$Events$onClick($author$project$Model$ResetOrder)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('清空')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id('mytable')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$table,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('table')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$thead,
-								_List_Nil,
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$tr,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$th,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('商品编码')
-													])),
-												A2(
-												$elm$html$Html$th,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('名称')
-													])),
-												A2(
-												$elm$html$Html$th,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('属性')
-													])),
-												A2(
-												$elm$html$Html$th,
-												_List_fromArray(
-													[
-														A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-													]),
-												_List_fromArray(
-													[
-														$elm$html$Html$text('数量')
-													])),
-												A2(
-												$elm$html$Html$th,
-												_List_Nil,
-												_List_fromArray(
-													[
-														$elm$html$Html$text('')
-													]))
-											]))
-									])),
-								$author$project$Page$NewOrder$orderItemsTableBody(prepare)
-							]))
-					]))
-			]));
-};
+var $author$project$Page$NewOrder$orderItemsTable = F2(
+	function (prepare, autoClearProducts) {
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$h4,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('配货单列表')
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('tertiary small'),
+									A2($elm$html$Html$Attributes$style, 'width', '80px'),
+									$elm$html$Html$Events$onClick($author$project$Model$PrintOrder)
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('打印')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('secondary small'),
+									A2($elm$html$Html$Attributes$style, 'width', '80px'),
+									$elm$html$Html$Events$onClick($author$project$Model$ResetOrder)
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('清空')
+								])),
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('checkbox'),
+									$elm$html$Html$Attributes$checked(autoClearProducts),
+									$elm$html$Html$Events$onCheck($author$project$Model$ResetAutoClearProductsInOrderAfterPrint),
+									A2($elm$html$Html$Attributes$style, 'margin-left', '12px')
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$label,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('自动清空')
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$id('mytable')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$table,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('table')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$thead,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$tr,
+											_List_Nil,
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$th,
+													_List_fromArray(
+														[
+															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text('商品编码')
+														])),
+													A2(
+													$elm$html$Html$th,
+													_List_fromArray(
+														[
+															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text('名称')
+														])),
+													A2(
+													$elm$html$Html$th,
+													_List_fromArray(
+														[
+															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text('属性')
+														])),
+													A2(
+													$elm$html$Html$th,
+													_List_fromArray(
+														[
+															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text('数量')
+														])),
+													A2(
+													$elm$html$Html$th,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$elm$html$Html$text('')
+														]))
+												]))
+										])),
+									$author$project$Page$NewOrder$orderItemsTableBody(prepare)
+								]))
+						]))
+				]));
+	});
 var $author$project$Page$NewOrder$inputControlsForAddOrder = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -7724,7 +7784,7 @@ var $author$project$Page$NewOrder$inputControlsForAddOrder = function (model) {
 			[
 				$author$project$Page$NewOrder$inputForOrderItems(model),
 				A2($elm$html$Html$br, _List_Nil, _List_Nil),
-				$author$project$Page$NewOrder$orderItemsTable(model.newOrderPrepare)
+				A2($author$project$Page$NewOrder$orderItemsTable, model.newOrderPrepare, model.autoClearProducts)
 			]));
 };
 var $author$project$Model$CsvRequested = {$: 'CsvRequested'};
