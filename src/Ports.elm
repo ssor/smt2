@@ -6,4 +6,4 @@ import TableData exposing (..)
 port storeSkuList : String -> Cmd msg
 
 
-port printOrder : List TableData -> Cmd msg
+port printOrder : String -> Cmd msg

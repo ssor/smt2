@@ -11,7 +11,6 @@
     <!-- <script src='assets/jspdf.min.js'></script> -->
     <!-- <script src='assets/html2pdf.js'></script> -->
     <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
-    <script defer src="assets/fontsome.js"></script>
 </head>
 
 
@@ -39,23 +38,46 @@
                 console.log("no sku to save")
             }
         })
-        function printRawHtmlString(someJSONdata) {
-            console.log(someJSONdata);
+        function printRawHtmlString(raw) {
+            console.log(raw);
             // return
+            const style = `
+                            table,
+                            table td,
+                            table thead tr th{
+                                width: 48rem;
+                                border: 1px solid silver;
+                                border-collapse: collapse;
+                                text-align: center;
+                            }
+                            .product-name{
+                                width: 50%;
+                            }
+                            .count{
+                                color: red;
+                            }
+                            .xianweibu{
+                                position: absolute;margin-left: 20rem;top: 16rem;
+                            }
+                            .tongbozhi{
+                                position: absolute;margin-left: 30rem;top: 16rem;
+                            }
+                            .jiachangluosi{
+                                position: absolute;margin-left: 40rem;top: 16rem;
+                            }
+                            .peihuoyuan{
+                                position: absolute;margin-left: 1rem;top: 20rem;
+                            }
+                            .shenheyuan{
+                                position: absolute;margin-left: 15rem;top: 20rem;
+                            }
+                            `
             printJS({
-                printable: someJSONdata,
-                type: 'json',
-                properties: [
-                    { field: 'code', displayName: '编码' },
-                    { field: 'name', displayName: '名称' },
-                    { field: 'attr', displayName: '属性' },
-                    { field: 'count', displayName: '数量' }
-                ],
-                gridHeaderStyle: 'color: black;  border: 2px solid #3971A5;',
-                gridStyle: 'border: 1px solid #3971A5;text-align:center;'
+                printable: raw,
+                type: 'raw-html',
+                style: style
             })
         }
-
     </script>
 </body>
 

@@ -28,9 +28,9 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (required, requiredAt)
 import Json.Encode as Encode exposing (list)
 import Model exposing (..)
+import Ports exposing (..)
 import RemoteData exposing (WebData)
 import Sku exposing (..)
-import Ports exposing (..)
 
 
 skuListTableView : Model -> Html Msg
@@ -44,6 +44,7 @@ skuListTableView model =
                     [ th [] [ text "编码" ]
                     , th [] [ text "名称" ]
                     , th [] [ text "属性" ]
+                    , th [] [ text "单位" ]
                     ]
                 ]
             , tbody [] (List.map skuItemTableBody model.skuList)
@@ -57,6 +58,7 @@ skuItemTableBody sku =
         [ td [] [ text sku.code ]
         , td [] [ text sku.name ]
         , td [] [ text sku.attr ]
+        , td [] [ text sku.measure ]
         ]
 
 

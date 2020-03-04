@@ -5502,9 +5502,9 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$Model$PageHome = {$: 'PageHome'};
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$Sku$Sku = F3(
-	function (code, name, attr) {
-		return {attr: attr, code: code, name: name};
+var $author$project$Sku$Sku = F4(
+	function (code, name, attr, measure) {
+		return {attr: attr, code: code, measure: measure, name: name};
 	});
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $elm$json$Json$Decode$field = _Json_decodeField;
@@ -5518,17 +5518,21 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$Sku$skuDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'attr',
+	'measure',
 	$elm$json$Json$Decode$string,
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'name',
+		'attr',
 		$elm$json$Json$Decode$string,
 		A3(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'id',
+			'name',
 			$elm$json$Json$Decode$string,
-			$elm$json$Json$Decode$succeed($author$project$Sku$Sku))));
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+				'id',
+				$elm$json$Json$Decode$string,
+				$elm$json$Json$Decode$succeed($author$project$Sku$Sku)))));
 var $author$project$Sku$decodeSkuListFromString = function (s) {
 	var _v0 = A2(
 		$elm$json$Json$Decode$decodeString,
@@ -6140,99 +6144,36 @@ var $elm$file$File$Select$file = F2(
 			toMsg,
 			_File_uploadOne(mimes));
 	});
-var $author$project$TableData$TableData = F4(
-	function (code, name, attr, count) {
-		return {attr: attr, code: code, count: count, name: name};
-	});
-var $elm$json$Json$Encode$list = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				$elm$core$List$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(_Utils_Tuple0),
-				entries));
-	});
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
 var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$Ports$printOrder = _Platform_outgoingPort(
-	'printOrder',
-	$elm$json$Json$Encode$list(
-		function ($) {
-			return $elm$json$Json$Encode$object(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'attr',
-						$elm$json$Json$Encode$string($.attr)),
-						_Utils_Tuple2(
-						'code',
-						$elm$json$Json$Encode$string($.code)),
-						_Utils_Tuple2(
-						'count',
-						$elm$json$Json$Encode$string($.count)),
-						_Utils_Tuple2(
-						'name',
-						$elm$json$Json$Encode$string($.name))
-					]));
-		}));
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
+var $author$project$Ports$printOrder = _Platform_outgoingPort('printOrder', $elm$json$Json$Encode$string);
 var $author$project$Page$NewOrder$handlePrintOrder = function (model) {
-	var table3 = _List_fromArray(
-		[
-			A4($author$project$TableData$TableData, '-----', '-----', '------', '-----'),
-			A4($author$project$TableData$TableData, '配货员', '', '审核员', '')
-		]);
-	var items = model.newOrderPrepare.itemsForNewOrder;
-	var table1 = A2(
-		$elm$core$List$map,
-		function (item) {
-			return A4(
-				$author$project$TableData$TableData,
-				item.sku.code,
-				item.sku.name,
-				item.sku.attr,
-				$elm$core$String$fromInt(item.count));
-		},
-		items);
-	var gifts = model.newOrderPrepare.giftList;
-	var table2 = A2(
-		$elm$core$List$map,
-		function (gift) {
-			return A4(
-				$author$project$TableData$TableData,
-				'',
-				A2($elm$core$Maybe$withDefault, '', gift),
-				'赠品',
-				'1');
-		},
-		gifts);
+	var tdg = F2(
+		function (s, styleOption) {
+			if (styleOption.$ === 'Nothing') {
+				return '<td>' + (s + '</td>');
+			} else {
+				var st = styleOption.a;
+				return '<td ' + (st + ('>' + (s + '</td>')));
+			}
+		});
+	var trGenerator = function (item) {
+		return '<tr>' + (A2(tdg, item.sku.code, $elm$core$Maybe$Nothing) + (A2(tdg, item.sku.name, $elm$core$Maybe$Nothing) + (A2(tdg, item.sku.attr, $elm$core$Maybe$Nothing) + (A2(
+			tdg,
+			$elm$core$String$fromInt(item.count),
+			$elm$core$Maybe$Just(' class="count" ')) + (A2(tdg, item.sku.measure, $elm$core$Maybe$Nothing) + '</tr>')))));
+	};
+	var tableHead = '\r\n        <table>\r\n                    <thead>\r\n                        <tr>\r\n                            <th>商家编码</th>\r\n                            <th class="product-name">产品名称</th>\r\n                            <th>属性</th>\r\n                            <th>数量</th>\r\n                            <th>单位</th>\r\n                        </tr>\r\n                    </thead>\r\n        ';
+	var tableBody = A2(
+		$elm$core$String$join,
+		' ',
+		A2($elm$core$List$map, trGenerator, model.newOrderPrepare.itemsForNewOrder));
+	var spans = '\r\n        </table>\r\n                <div>\r\n                    <span class="xianweibu">纤维布</span>\r\n                    <span class="tongbozhi">铜箔纸包装</span>\r\n                    <span class="jiachangluosi">加长螺丝</span>\r\n                    <span class="peihuoyuan">配货员</span>\r\n                    <span class="shenheyuan">审核员</span>\r\n                </div>\r\n        ';
 	return _Utils_Tuple2(
 		model,
 		$author$project$Ports$printOrder(
 			_Utils_ap(
-				table1,
-				_Utils_ap(table2, table3))));
+				tableHead,
+				_Utils_ap(tableBody, spans))));
 };
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
@@ -6898,6 +6839,28 @@ var $periodic$elm_csv$Csv$parse = function (s) {
 		_Utils_chr(','),
 		s);
 };
+var $elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
 var $author$project$Sku$skuEncoder = function (sku) {
 	return $elm$json$Json$Encode$object(
 		_List_fromArray(
@@ -6910,7 +6873,10 @@ var $author$project$Sku$skuEncoder = function (sku) {
 				$elm$json$Json$Encode$string(sku.name)),
 				_Utils_Tuple2(
 				'attr',
-				$elm$json$Json$Encode$string(sku.attr))
+				$elm$json$Json$Encode$string(sku.attr)),
+				_Utils_Tuple2(
+				'measure',
+				$elm$json$Json$Encode$string(sku.measure))
 			]));
 };
 var $author$project$Ports$storeSkuList = _Platform_outgoingPort('storeSkuList', $elm$json$Json$Encode$string);
@@ -6943,8 +6909,17 @@ var $elm$core$List$drop = F2(
 		}
 	});
 var $elm$core$String$trim = _String_trim;
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Sku$skuFromStringArray = function (list) {
-	if ($elm$core$List$length(list) < 3) {
+	if ($elm$core$List$length(list) < 5) {
 		return $elm$core$Maybe$Nothing;
 	} else {
 		var name = A2(
@@ -6952,6 +6927,11 @@ var $author$project$Sku$skuFromStringArray = function (list) {
 			'',
 			$elm$core$List$head(
 				A2($elm$core$List$drop, 1, list)));
+		var measure = A2(
+			$elm$core$Maybe$withDefault,
+			'',
+			$elm$core$List$head(
+				A2($elm$core$List$drop, 4, list)));
 		var code = $elm$core$String$trim(
 			A2(
 				$elm$core$Maybe$withDefault,
@@ -6963,7 +6943,7 @@ var $author$project$Sku$skuFromStringArray = function (list) {
 			$elm$core$List$head(
 				A2($elm$core$List$drop, 2, list)));
 		return ($elm$core$String$length(code) <= 0) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
-			A3($author$project$Sku$Sku, code, name, attr));
+			A4($author$project$Sku$Sku, code, name, attr, measure));
 	}
 };
 var $author$project$Page$SkuList$parseSkuListInCsv = F2(
@@ -7772,6 +7752,13 @@ var $author$project$Page$SkuList$skuItemTableBody = function (sku) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(sku.attr)
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(sku.measure)
 					]))
 			]));
 };
@@ -7833,6 +7820,13 @@ var $author$project$Page$SkuList$skuListTableView = function (model) {
 										_List_fromArray(
 											[
 												$elm$html$Html$text('属性')
+											])),
+										A2(
+										$elm$html$Html$th,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$text('单位')
 											]))
 									]))
 							])),

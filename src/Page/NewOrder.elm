@@ -30,9 +30,9 @@ import Html.Events exposing (onCheck, onClick, onInput)
 import Model exposing (..)
 import Order exposing (..)
 import OrderPrepare exposing (..)
+import Ports exposing (..)
 import Sku exposing (..)
 import TableData exposing (..)
-import Ports exposing (..)
 
 
 
@@ -47,28 +47,55 @@ resetOrder model =
 handlePrintOrder : Model -> ( Model, Cmd Msg )
 handlePrintOrder model =
     let
-        items =
+        tableHead =
+            """
+        <table>
+                    <thead>
+                        <tr>
+                            <th>商家编码</th>
+                            <th class="product-name">产品名称</th>
+                            <th>属性</th>
+                            <th>数量</th>
+                            <th>单位</th>
+                        </tr>
+                    </thead>
+        """
+
+        tdg s styleOption =
+            case styleOption of
+                Nothing ->
+                    "<td>" ++ s ++ "</td>"
+
+                Just st ->
+                    "<td " ++ st ++ ">" ++ s ++ "</td>"
+
+        trGenerator item =
+            "<tr>"
+                ++ tdg item.sku.code Nothing
+                ++ tdg item.sku.name Nothing
+                ++ tdg item.sku.attr Nothing
+                ++ tdg (String.fromInt item.count) (Just """ class="count" """)
+                ++ tdg item.sku.measure Nothing
+                ++ "</tr>"
+
+        tableBody =
             model.newOrderPrepare.itemsForNewOrder
+                |> List.map trGenerator
+                |> String.join " "
 
-        table1 =
-            List.map
-                (\item -> TableData item.sku.code item.sku.name item.sku.attr (String.fromInt item.count))
-                items
-
-        gifts =
-            model.newOrderPrepare.giftList
-
-        table2 =
-            List.map
-                (\gift -> TableData "" (Maybe.withDefault "" gift) "赠品" "1")
-                gifts
-
-        table3 =
-            [ TableData "-----" "-----" "------" "-----"
-            , TableData "配货员" "" "审核员" ""
-            ]
+        spans =
+            """
+        </table>
+                <div>
+                    <span class="xianweibu">纤维布</span>
+                    <span class="tongbozhi">铜箔纸包装</span>
+                    <span class="jiachangluosi">加长螺丝</span>
+                    <span class="peihuoyuan">配货员</span>
+                    <span class="shenheyuan">审核员</span>
+                </div>
+        """
     in
-    ( model, printOrder (table1 ++ table2 ++ table3) )
+    ( model, printOrder (tableHead ++ tableBody ++ spans) )
 
 
 searchProductById : Model -> String -> ( Model, Cmd Msg )

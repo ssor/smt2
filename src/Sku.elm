@@ -16,17 +16,18 @@ type alias Sku =
     { code : String
     , name : String
     , attr : String
+    , measure : String
     }
 
 
 emptySku : Sku
 emptySku =
-    Sku "" "" ""
+    Sku "" "" "" ""
 
 
 skuFromStringArray : List String -> Maybe Sku
 skuFromStringArray list =
-    if List.length list < 3 then
+    if List.length list < 5 then
         Nothing
 
     else
@@ -39,12 +40,15 @@ skuFromStringArray list =
 
             attr =
                 list |> List.drop 2 |> List.head |> Maybe.withDefault ""
+
+            measure =
+                list |> List.drop 4 |> List.head |> Maybe.withDefault ""
         in
         if String.length code <= 0 then
             Nothing
 
         else
-            Just (Sku code name attr)
+            Just (Sku code name attr measure)
 
 
 decodeSkuListFromString : String -> List Sku
@@ -63,6 +67,7 @@ skuDecoder =
         |> required "id" string
         |> required "name" string
         |> required "attr" string
+        |> required "measure" string
 
 
 skuEncoder : Sku -> Value
@@ -71,4 +76,5 @@ skuEncoder sku =
         [ ( "id", Encode.string sku.code )
         , ( "name", Encode.string sku.name )
         , ( "attr", Encode.string sku.attr )
+        , ( "measure", Encode.string sku.measure )
         ]
