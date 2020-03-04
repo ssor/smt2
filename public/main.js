@@ -6070,7 +6070,10 @@ var $author$project$OrderPrepare$saveItemToOrderPrepare = function (op) {
 	} else {
 		var sku = _v0.a;
 		var newItem = A2($author$project$Order$Item, sku, op.count);
-		var items = A2($elm$core$List$cons, newItem, op.itemsForNewOrder);
+		var items = _Utils_ap(
+			op.itemsForNewOrder,
+			_List_fromArray(
+				[newItem]));
 		var emptyOp = $author$project$OrderPrepare$initOrderPrepare;
 		return _Utils_update(
 			emptyOp,
@@ -7438,8 +7441,7 @@ var $author$project$Page$NewOrder$inputForOrderItems = function (model) {
 			_List_Nil,
 			_List_fromArray(
 				[
-					$author$project$Page$NewOrder$inputProductEmpty(1),
-					$author$project$Page$NewOrder$inputGift(model.giftList)
+					$author$project$Page$NewOrder$inputProductEmpty(1)
 				]));
 	} else {
 		var sku = _v0.a;
