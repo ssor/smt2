@@ -52,11 +52,11 @@ handlePrintOrder model =
         <table>
                     <thead>
                         <tr>
-                            <th>商家编码</th>
+                            <th class="product-code">商家编码</th>
                             <th class="product-name">产品名称</th>
-                            <th>属性</th>
-                            <th>数量</th>
-                            <th>单位</th>
+                            <th class="product-attr">属性</th>
+                            <th class="product-count">数量</th>
+                            <th class="product-measure">单位</th>
                         </tr>
                     </thead>
         """

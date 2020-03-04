@@ -6162,7 +6162,7 @@ var $author$project$Page$NewOrder$handlePrintOrder = function (model) {
 			$elm$core$String$fromInt(item.count),
 			$elm$core$Maybe$Just(' class="count" ')) + (A2(tdg, item.sku.measure, $elm$core$Maybe$Nothing) + '</tr>')))));
 	};
-	var tableHead = '\r\n        <table>\r\n                    <thead>\r\n                        <tr>\r\n                            <th>商家编码</th>\r\n                            <th class="product-name">产品名称</th>\r\n                            <th>属性</th>\r\n                            <th>数量</th>\r\n                            <th>单位</th>\r\n                        </tr>\r\n                    </thead>\r\n        ';
+	var tableHead = '\r\n        <table>\r\n                    <thead>\r\n                        <tr>\r\n                            <th class="product-code">商家编码</th>\r\n                            <th class="product-name">产品名称</th>\r\n                            <th class="product-attr">属性</th>\r\n                            <th class="product-count">数量</th>\r\n                            <th class="product-measure">单位</th>\r\n                        </tr>\r\n                    </thead>\r\n        ';
 	var tableBody = A2(
 		$elm$core$String$join,
 		' ',
