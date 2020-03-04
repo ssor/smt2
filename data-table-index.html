@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" content="text/html; charset=utf-8">
+<html>
+
+<head>
+    <link rel="stylesheet" href="assets/datatable/datatables.min.css">
+    </link>
+    <link rel="stylesheet" href="assets/bulma-0.8.0/css/bulma.min.css">
+    <script defer src="assets/fontsome.js"></script>
+    <script src="assets/datatable/datatables.min.js">
+    </script>
+</head>
+
+
+<body>
+    <div id="elm-app"></div>
+
+    <script src="elm.js"></script>
+    <script>
+        var table = null;
+        var app = Elm.App.init({
+            node: document.getElementById("elm-app")
+        });
+        app.ports.setupDataTable.subscribe(function(cmd) {
+            setupDataTableSuccess(cmd)
+        });
+        $(document).ready(function() {});
+
+        function setupDataTableSuccess(data) {
+            setTimeout(function() {
+                divTable = document.getElementById("data-list");
+                if (divTable == null) {
+                    setupDataTableSuccess(data)
+                } else {
+                    setupDataTable(data)
+                }
+            }, 100)
+        }
+
+        function setupDataTable(data) {
+            if (table != null) {
+                table.destroy();
+                $('#data-list').empty();
+                table = null;
+                console.log("old table destroyed")
+            }
+            console.info("try to set up table: ", data)
+            switch (data.command) {
+                case "order":
+                    table = $('#data-list').DataTable({
+                        data: data.data,
+                        columns: data.columns
+                    });
+                    console.log("table for order setup")
+                    break;
+                case "sku":
+                    table = $('#data-list').DataTable({
+                        data: data.data,
+                        columns: data.columns
+                    });
+                    console.log("table for sku setup")
+                    break;
+                default:
+                    break;
+            }
+        }
+    </script>
+</body>
+
+</html>

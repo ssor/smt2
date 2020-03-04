@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" content="text/html; charset=utf-8">
+<html>
+
+<head>
+    </link>
+    <!-- <link rel="stylesheet" href="assets/pure.css"> -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
+    <!-- <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script> -->
+    <!-- <script src='assets/jspdf.min.js'></script> -->
+    <!-- <script src='assets/html2pdf.js'></script> -->
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script defer src="assets/fontsome.js"></script>
+</head>
+
+
+<body>
+    <div id="elm-app"></div>
+
+    <script src="main.js"></script>
+    <script>
+        var storedState = localStorage.getItem('sku-list');
+        console.log("Retrieved state: ", storedState);
+        var startingState = storedState ? JSON.parse(storedState) : null;
+        var app = Elm.App.init({
+            node: document.getElementById("elm-app"),
+            flags: startingState
+        });
+        app.ports.printOrder.subscribe(function (data) {
+            printRawHtmlString(data)
+        });
+        app.ports.storeSkuList.subscribe(function (data) {
+            if (data.length > 0) {
+                var skuListJson = JSON.stringify(data);
+                localStorage.setItem('sku-list', skuListJson);
+                console.log("Saved sku list: ", skuListJson);
+            } else {
+                console.log("no sku to save")
+            }
+        })
+        function printRawHtmlString(someJSONdata) {
+            console.log(someJSONdata);
+            // return
+            printJS({
+                printable: someJSONdata,
+                type: 'json',
+                properties: [
+                    { field: 'code', displayName: '编码' },
+                    { field: 'name', displayName: '名称' },
+                    { field: 'attr', displayName: '属性' },
+                    { field: 'count', displayName: '数量' }
+                ],
+                gridHeaderStyle: 'color: black;  border: 2px solid #3971A5;',
+                gridStyle: 'border: 1px solid #3971A5;text-align:center;'
+            })
+        }
+
+    </script>
+</body>
+
+</html>
