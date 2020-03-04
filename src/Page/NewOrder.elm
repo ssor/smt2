@@ -190,7 +190,8 @@ inputForOrderItems model =
         Nothing ->
             div []
                 [ inputProductEmpty 1
-                , inputGift model.giftList
+
+                -- , inputGift model.giftList
                 ]
 
         Just sku ->

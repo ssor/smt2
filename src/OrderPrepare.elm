@@ -61,7 +61,7 @@ saveItemToOrderPrepare op =
                     Order.Item sku op.count
 
                 items =
-                    newItem :: op.itemsForNewOrder
+                    op.itemsForNewOrder ++ [ newItem ]
             in
             { emptyOp
                 | itemsForNewOrder = items
