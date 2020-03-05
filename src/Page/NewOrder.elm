@@ -23,6 +23,7 @@ import Html.Attributes as Attr
         , min
         , src
         , style
+        , tabindex
         , type_
         , value
         , width
@@ -153,12 +154,6 @@ addGiftToOrder model =
 
             else
                 prepare.giftList
-
-        _ =
-            Debug.log "current gift" prepare.currentGift
-
-        _ =
-            Debug.log "new gift list: " newGiftList
     in
     ( { model | newOrderPrepare = { prepare | giftList = newGiftList } }, Cmd.none )
 
@@ -173,6 +168,7 @@ addNewItemToOrder model =
 
 
 
+-- ( model, Cmd.none )
 -- View
 
 
@@ -195,14 +191,11 @@ inputForOrderItems model =
         Nothing ->
             div []
                 [ inputProductEmpty 1
-
-                -- , inputGift model.giftList
                 ]
 
         Just sku ->
             div []
                 [ inputProduct prepare.productId sku.name sku.attr prepare.count
-                , inputGift model.giftList
                 ]
 
 
@@ -214,8 +207,7 @@ inputGift values =
         , select [ onInput SelectGift, style "width" "203px" ]
             (values |> List.map toOption)
         , button
-            [ class "primary small"
-            , style "min-width" "80px"
+            [ class "ui button"
             , onClick AddGiftToOrder
             ]
             [ text "添加" ]
@@ -230,56 +222,72 @@ toOption v =
 inputProductEmpty : Int -> Html Msg
 inputProductEmpty count =
     div []
-        [ fieldset []
-            [ legend [] [ text "SKU信息" ]
-            , label [] [ text "编码" ]
-            , input [ class "input", type_ "text", onInput SearchProductById ] []
-            , label [] [ text "数量" ]
-            , input
-                [ class "input"
-                , type_ "number"
-                , value (String.fromInt count)
-                , onInput ProductCountInOrderChanged
+        [ div [ class "ui form" ]
+            [ h4 [] [ text "添加SKU" ]
+            , div [ class "ui segment" ]
+                [ div [ class "two fields" ]
+                    [ div [ class "field" ]
+                        [ label [] [ text "编码" ]
+                        , input
+                            [ class "input"
+                            , type_ "text"
+                            , onInput SearchProductById
+                            ]
+                            []
+                        ]
+                    , div [ class "field" ]
+                        [ label [] [ text "数量" ]
+                        , input
+                            [ class "input"
+                            , type_ "number"
+                            , value (String.fromInt count)
+                            , onInput ProductCountInOrderChanged
+                            ]
+                            []
+                        ]
+                    ]
+                , button
+                    [ class "ui button"
+                    ]
+                    [ text "添加" ]
                 ]
-                []
-            , button
-                [ class "primary small"
-                , style "min-width" "80px"
-                , onClick AddNewItemToOrder
-                ]
-                [ text "添加" ]
             ]
+
+        -- , div [ class "ui divider" ] []
         ]
 
 
 inputProduct : String -> String -> String -> Int -> Html Msg
 inputProduct id name attr count =
-    div [ class "pure-form" ]
-        [ fieldset []
-            [ legend [] [ text "SKU信息" ]
-            , label [] [ text "编码" ]
-            , input [ class "input", type_ "text", onInput SearchProductById, value id ] []
-            , label [] [ text "数量" ]
-            , input
-                [ class "input"
-                , type_ "number"
-                , value (String.fromInt count)
-                , onInput ProductCountInOrderChanged
-                ]
-                []
-            , button
-                [ class "primary small"
-                , style "min-width" "80px"
-                , onClick AddNewItemToOrder
-                ]
-                [ text "添加" ]
-            , br [] []
-            , div [ style "margin" "5px 0px 12px 50px" ]
-                [ span
-                    [ style "font-size" "small"
-                    , style "color" "blue"
+    div []
+        [ div [ class "ui form" ]
+            [ h4 [] [ text "添加SKU" ]
+            , div [ class "ui segment" ]
+                [ div [ class "two fields" ]
+                    [ div [ class "field" ]
+                        [ label [] [ text "编码" ]
+                        , input [ class "input", type_ "text", onInput SearchProductById, value id ] []
+                        ]
+                    , div [ class "field" ]
+                        [ label [] [ text "数量" ]
+                        , input
+                            [ class "input"
+                            , type_ "number"
+                            , value (String.fromInt count)
+                            , onInput ProductCountInOrderChanged
+                            ]
+                            []
+                        ]
                     ]
+                , div [ class "ui green message" ]
                     [ text (name ++ "-" ++ attr) ]
+                , button
+                    [ class "ui button"
+                    , onClick AddNewItemToOrder
+
+                    --  onClick PrintOrder
+                    ]
+                    [ text "添加" ]
                 ]
             ]
         ]
@@ -287,6 +295,10 @@ inputProduct id name attr count =
 
 resetAutoClearProductsInOrderAfterPrint : Bool -> Model -> ( Model, Cmd Msg )
 resetAutoClearProductsInOrderAfterPrint value model =
+    let
+        _ =
+            Debug.log "reset auto clear product: " value
+    in
     ( { model | autoClearProducts = value }, Cmd.none )
 
 
@@ -296,43 +308,37 @@ orderItemsTable prepare autoClearProducts =
         [ div []
             [ h4 [] [ text "配货单列表" ]
             ]
-        , div []
+        , div [ class "ui segment" ]
             [ button
-                [ class "tertiary small"
-                , style "width" "80px"
+                [ class "ui button"
                 , onClick PrintOrder
                 ]
                 [ text "打印" ]
             , button
-                [ class "secondary small"
-                , style "width" "80px"
+                [ class "ui button"
                 , onClick ResetOrder
                 ]
                 [ text "清空" ]
             , input
                 [ type_ "checkbox"
+                , class "hidden"
+                , tabindex 0
+                , id "check-auto-clear-products"
                 , checked autoClearProducts
                 , onCheck ResetAutoClearProductsInOrderAfterPrint
-                , style "margin-left" "12px"
                 ]
                 []
             , label [] [ text "自动清空" ]
             ]
         , div [ id "mytable" ]
-            [ table [ class "table" ]
-                [ --caption [] [ text "SKU列表" ]
-                  thead []
+            [ table [ class "ui striped table" ]
+                [ thead []
                     [ tr []
-                        [ th [ style "font-size" "14px" ]
-                            [ text "商品编码" ]
-                        , th [ style "font-size" "14px" ]
-                            [ text "名称" ]
-                        , th [ style "font-size" "14px" ]
-                            [ text "属性" ]
-                        , th [ style "font-size" "14px" ]
-                            [ text "数量" ]
-                        , th []
-                            [ text "" ]
+                        [ th [] [ text "商品编码" ]
+                        , th [] [ text "名称" ]
+                        , th [] [ text "属性" ]
+                        , th [] [ text "数量" ]
+                        , th [] [ text "" ]
                         ]
                     ]
                 , orderItemsTableBody prepare
@@ -359,13 +365,12 @@ orderItemsTableBody prepare =
 inputForOrderItem : Order.Item -> Html Msg
 inputForOrderItem item =
     tr []
-        [ td [ style "font-size" "13px" ] [ text item.sku.code ]
-        , td [ style "font-size" "13px" ] [ text item.sku.name ]
-        , td [ style "font-size" "13px" ] [ text item.sku.attr ]
-        , td [ style "font-size" "13px" ] [ text (String.fromInt item.count) ]
+        [ td [] [ text item.sku.code ]
+        , td [] [ text item.sku.name ]
+        , td [] [ text item.sku.attr ]
+        , td [] [ text (String.fromInt item.count) ]
         , td
             [ onClick (DeleteOrderItem item.sku.code)
-            , style "font-size" "13px"
             , style "text-decoration" "underline"
             ]
             [ text "删除" ]
@@ -440,136 +445,3 @@ deleteOrderItem code model =
             List.filter filter currentItems
     in
     ( { model | newOrderPrepare = { prepare | itemsForNewOrder = newItemList } }, Cmd.none )
-
-
-
--- inputProductAttr : String -> Html Msg
--- inputProductAttr attr =
---     div [ class "field is-horizontal" ]
---         [ div [ class "field-label is-small" ]
---             [ label [ class "label" ] [ text "" ]
---             ]
---         , div [ class "field-body" ]
---             [ div [ class "field" ]
---                 [ label [ class "label" ] [ text attr ]
---                 ]
---             ]
---         ]
--- inputProductName : String -> Html Msg
--- inputProductName name =
---     div [ class "field is-horizontal" ]
---         [ div [ class "field-label is-small" ]
---             [ label [ class "label" ] [ text "详细信息" ]
---             ]
---         , div [ class "field-body" ]
---             [ div [ class "field" ]
---                 [ label [ class "label" ] [ text name ]
---                 ]
---             ]
---         ]
--- inputProductCountInOrder : Int -> Html Msg
--- inputProductCountInOrder count =
---     div [ class "field is-horizontal" ]
---         [ div [ class "field-label is-normal" ]
---             [ label [ class "label" ] [ text "产品数量" ]
---             ]
---         , div [ class "field-body" ]
---             [ div [ class "field" ]
---                 [ div [ class "control" ]
---                     [ input
---                         [ class "input"
---                         , type_ "number"
---                         , value (String.fromInt count)
---                         , onInput ProductCountInOrderChanged
---                         ]
---                         []
---                     ]
---                 ]
---             ]
---         ]
--- inputProductId : String -> Html Msg
--- inputProductId code =
---     div [ class "field is-horizontal" ]
---         [ div [ class "field-label is-normal" ]
---             [ label [ class "label" ] [ text "商品编码" ]
---             ]
---         , div [ class "field-body" ]
---             [ div [ class "field" ]
---                 [ div [ class "control" ]
---                     [ input [ class "input", type_ "text", onInput SearchProductById, value code ]
---                         []
---                     ]
---                 ]
---             , div [ class "field" ]
---                 [ div [ class "control" ]
---                     [ button
---                         [ class "button is-info"
---                         , onClick AddNewItemToOrder
---                         ]
---                         [ text "添加" ]
---                     ]
---                 ]
---             ]
---         ]
--- inputCheckOptions : OrderPrepare -> Html Msg
--- inputCheckOptions prepare =
---     div [ class "field is-horizontal" ]
---         [ div [ class "field-label is-normal" ]
---             [ label [ class "label" ] [ text "赠品" ]
---             ]
---         , div [ class "field-body" ]
---             [ div
---                 [ class "field is-grouped" ]
---                 [ div [ class "control" ]
---                     [ label [ class "checkbox" ]
---                         [ input
---                             [ type_ "checkbox"
---                             , checked prepare.xianwei
---                             , onCheck (OpinionChanged Xianweibu)
---                             ]
---                             []
---                         , text "纤维布"
---                         ]
---                     ]
---                 , div [ class "control" ]
---                     [ label [ class "checkbox" ]
---                         [ input
---                             [ type_ "checkbox"
---                             , checked prepare.tongbozhi
---                             , onCheck (OpinionChanged Tongbozhi)
---                             ]
---                             []
---                         , text "铜箔纸包装"
---                         ]
---                     ]
---                 , div [ class "control" ]
---                     [ label [ class "checkbox" ]
---                         [ input
---                             [ type_ "checkbox"
---                             , checked prepare.luosi
---                             , onCheck (OpinionChanged Luosi)
---                             ]
---                             []
---                         , text "加长螺丝"
---                         ]
---                     ]
---                 ]
---             ]
---         ]
--- buttonCreateOrder : Html Msg
--- buttonCreateOrder =
---     div [ class "field is-horizontal" ]
---         [ div [ class "field-label is-normal" ] []
---         , div [ class "field-body" ]
---             [ div [ class "field" ]
---                 [ div [ class "control" ]
---                     [ button
---                         [ class "button is-primary"
---                         , onClick CreateOrder
---                         , style "width" "100%"
---                         ]
---                         [ text "创建" ]
---                     ]
---                 ]
---             ]
---         ]

@@ -22,8 +22,7 @@ type alias Model =
     , giftList : List String
     , time : Maybe Time.Posix
     , autoClearProducts : Bool
-
-    -- , csv : Maybe String
+    , version : String
     }
 
 

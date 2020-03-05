@@ -44,9 +44,8 @@ view model =
 topLayout : Model -> Html Msg
 topLayout model =
     div
-        [ class "container" ]
-        [ --navView model
-          columnsView model
+        [ class "ui grid" ]
+        [ columnsView model
         ]
 
 
@@ -73,14 +72,14 @@ navView model =
 
 columnsView : Model -> Html Msg
 columnsView model =
-    div [ class "row" ]
-        [ div [ class "col-sm-2" ]
+    div [ class "three column row" ]
+        [ div [ class "two wide column" ]
             [ menuView model
             ]
-        , div [ class "col-sm-9", style "border-left" "solid 1px rgba(100,100,100,0.3)" ]
+        , div [ class "twelve wide column" ]
             [ mainContentView model
             ]
-        , div [ class "col-sm-1" ] []
+        , div [ class "two wide column" ] []
         ]
 
 
@@ -89,35 +88,51 @@ mainContentView model =
     case model.page of
         PageHome ->
             div
-                []
-                []
+                [ class "main-content" ]
+                [ div [ class "main-content-title" ]
+                    [ div
+                        [ class "ui medium header " ]
+                        [ text "版本" ]
+                    , div [] [ text model.version ]
+                    ]
+                ]
 
         PageSkuList ->
             div
-                []
-                [ h3
-                    []
-                    [ text "产品列表" ]
+                [ class "main-content" ]
+                [ div [ class "main-content-title" ]
+                    [ div
+                        [ class "ui medium header " ]
+                        [ text "产品列表" ]
+                    ]
                 , skuListTableView model
                 ]
 
         PageAddOrder ->
             div
-                []
-                [ h3
-                    []
-                    [ text "新配货单" ]
+                [ class "main-content" ]
+                [ div [ class "main-content-title" ]
+                    [ div
+                        [ class "ui medium header " ]
+                        [ text "新配货单" ]
+                    ]
                 , inputControlsForAddOrder model
                 ]
 
 
 menuView : Model -> Html Msg
 menuView model =
-    nav []
-        [ a [ href "#" ] [ text "配货单管理" ]
-        , a [ href "#", class "sublink-1", onClick ToAddOrderPage ] [ text "添加配货单" ]
-        , a [ href "#" ] [ text "产品管理" ]
-        , a [ href "#", class "sublink-1", onClick ToShowSkuListPage ] [ text "产品列表" ]
+    div [ class "left-main-menu" ]
+        [ div [ class "ui secondary vertical pointing menu" ]
+            [ div [ class "item" ]
+                [ a [ class "ui logo icon image" ]
+                    [ img [ src "logo.png", id "menu-logo" ] []
+                    ]
+                ]
+            , div [ class "ui divider" ] []
+            , a [ class "item ui small header", onClick ToAddOrderPage ] [ text "添加配货单" ]
+            , a [ class "item ui small header", onClick ToShowSkuListPage ] [ text "产品列表" ]
+            ]
         ]
 
 
@@ -148,6 +163,7 @@ initialModel skuRaw =
     , giftList = defaultGiftList
     , time = Nothing
     , autoClearProducts = True
+    , version = "2020.3.3.1"
     }
 
 

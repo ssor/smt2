@@ -5578,7 +5578,7 @@ var $author$project$App$initialModel = function (skuRaw) {
 			return $author$project$Sku$decodeSkuListFromString(jsonRawString);
 		}
 	}();
-	return {autoClearProducts: true, giftList: $author$project$OrderPrepare$defaultGiftList, newOrderPrepare: $author$project$OrderPrepare$initOrderPrepare, orderList: _List_Nil, page: $author$project$Model$PageHome, skuList: skuList, time: $elm$core$Maybe$Nothing};
+	return {autoClearProducts: true, giftList: $author$project$OrderPrepare$defaultGiftList, newOrderPrepare: $author$project$OrderPrepare$initOrderPrepare, orderList: _List_Nil, page: $author$project$Model$PageHome, skuList: skuList, time: $elm$core$Maybe$Nothing, version: '2020.3.3.1'};
 };
 var $author$project$App$init = function (flags) {
 	return _Utils_Tuple2(
@@ -6047,8 +6047,6 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Page$NewOrder$addGiftToOrder = function (model) {
 	var prepare = model.newOrderPrepare;
 	var newGiftList = (!A2($elm$core$List$member, prepare.currentGift, prepare.giftList)) ? A2($elm$core$List$cons, prepare.currentGift, prepare.giftList) : prepare.giftList;
-	var _v0 = A2($elm$core$Debug$log, 'current gift', prepare.currentGift);
-	var _v1 = A2($elm$core$Debug$log, 'new gift list: ', newGiftList);
 	return _Utils_Tuple2(
 		_Utils_update(
 			model,
@@ -7005,6 +7003,7 @@ var $author$project$Page$NewOrder$productCountInOrderChanged = F2(
 	});
 var $author$project$Page$NewOrder$resetAutoClearProductsInOrderAfterPrint = F2(
 	function (value, model) {
+		var _v0 = A2($elm$core$Debug$log, 'reset auto clear product: ', value);
 		return _Utils_Tuple2(
 			_Utils_update(
 				model,
@@ -7161,16 +7160,18 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $elm$html$Html$br = _VirtualDom_node('br');
-var $author$project$Model$AddGiftToOrder = {$: 'AddGiftToOrder'};
-var $author$project$Model$SelectGift = function (a) {
-	return {$: 'SelectGift', a: a};
+var $author$project$Model$AddNewItemToOrder = {$: 'AddNewItemToOrder'};
+var $author$project$Model$ProductCountInOrderChanged = function (a) {
+	return {$: 'ProductCountInOrderChanged', a: a};
+};
+var $author$project$Model$SearchProductById = function (a) {
+	return {$: 'SearchProductById', a: a};
 };
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$fieldset = _VirtualDom_node('fieldset');
+var $elm$html$Html$h4 = _VirtualDom_node('h4');
+var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$html$Html$legend = _VirtualDom_node('legend');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -7219,165 +7220,122 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$html$Html$select = _VirtualDom_node('select');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Page$NewOrder$toOption = function (v) {
-	return A2(
-		$elm$html$Html$option,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$value(v)
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text(v)
-			]));
-};
-var $author$project$Page$NewOrder$inputGift = function (values) {
-	return A2(
-		$elm$html$Html$fieldset,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$legend,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('赠品')
-					])),
-				A2(
-				$elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('列表')
-					])),
-				A2(
-				$elm$html$Html$select,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onInput($author$project$Model$SelectGift),
-						A2($elm$html$Html$Attributes$style, 'width', '203px')
-					]),
-				A2($elm$core$List$map, $author$project$Page$NewOrder$toOption, values)),
-				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('primary small'),
-						A2($elm$html$Html$Attributes$style, 'min-width', '80px'),
-						$elm$html$Html$Events$onClick($author$project$Model$AddGiftToOrder)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('添加')
-					]))
-			]));
-};
-var $author$project$Model$AddNewItemToOrder = {$: 'AddNewItemToOrder'};
-var $author$project$Model$ProductCountInOrderChanged = function (a) {
-	return {$: 'ProductCountInOrderChanged', a: a};
-};
-var $author$project$Model$SearchProductById = function (a) {
-	return {$: 'SearchProductById', a: a};
-};
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Page$NewOrder$inputProduct = F4(
 	function (id, name, attr, count) {
 		return A2(
 			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('pure-form')
-				]),
+			_List_Nil,
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$fieldset,
-					_List_Nil,
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('ui form')
+						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$legend,
+							$elm$html$Html$h4,
 							_List_Nil,
 							_List_fromArray(
 								[
-									$elm$html$Html$text('SKU信息')
+									$elm$html$Html$text('添加SKU')
 								])),
-							A2(
-							$elm$html$Html$label,
-							_List_Nil,
-							_List_fromArray(
-								[
-									$elm$html$Html$text('编码')
-								])),
-							A2(
-							$elm$html$Html$input,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('input'),
-									$elm$html$Html$Attributes$type_('text'),
-									$elm$html$Html$Events$onInput($author$project$Model$SearchProductById),
-									$elm$html$Html$Attributes$value(id)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$label,
-							_List_Nil,
-							_List_fromArray(
-								[
-									$elm$html$Html$text('数量')
-								])),
-							A2(
-							$elm$html$Html$input,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('input'),
-									$elm$html$Html$Attributes$type_('number'),
-									$elm$html$Html$Attributes$value(
-									$elm$core$String$fromInt(count)),
-									$elm$html$Html$Events$onInput($author$project$Model$ProductCountInOrderChanged)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$button,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('primary small'),
-									A2($elm$html$Html$Attributes$style, 'min-width', '80px'),
-									$elm$html$Html$Events$onClick($author$project$Model$AddNewItemToOrder)
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('添加')
-								])),
-							A2($elm$html$Html$br, _List_Nil, _List_Nil),
 							A2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									A2($elm$html$Html$Attributes$style, 'margin', '5px 0px 12px 50px')
+									$elm$html$Html$Attributes$class('ui segment')
 								]),
 							_List_fromArray(
 								[
 									A2(
-									$elm$html$Html$span,
+									$elm$html$Html$div,
 									_List_fromArray(
 										[
-											A2($elm$html$Html$Attributes$style, 'font-size', 'small'),
-											A2($elm$html$Html$Attributes$style, 'color', 'blue')
+											$elm$html$Html$Attributes$class('two fields')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('field')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$label,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$elm$html$Html$text('编码')
+														])),
+													A2(
+													$elm$html$Html$input,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$class('input'),
+															$elm$html$Html$Attributes$type_('text'),
+															$elm$html$Html$Events$onInput($author$project$Model$SearchProductById),
+															$elm$html$Html$Attributes$value(id)
+														]),
+													_List_Nil)
+												])),
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('field')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$label,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$elm$html$Html$text('数量')
+														])),
+													A2(
+													$elm$html$Html$input,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$class('input'),
+															$elm$html$Html$Attributes$type_('number'),
+															$elm$html$Html$Attributes$value(
+															$elm$core$String$fromInt(count)),
+															$elm$html$Html$Events$onInput($author$project$Model$ProductCountInOrderChanged)
+														]),
+													_List_Nil)
+												]))
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('ui green message')
 										]),
 									_List_fromArray(
 										[
 											$elm$html$Html$text(name + ('-' + attr))
+										])),
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('ui button'),
+											$elm$html$Html$Events$onClick($author$project$Model$AddNewItemToOrder)
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('添加')
 										]))
 								]))
 						]))
@@ -7390,62 +7348,99 @@ var $author$project$Page$NewOrder$inputProductEmpty = function (count) {
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$fieldset,
-				_List_Nil,
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('ui form')
+					]),
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$legend,
+						$elm$html$Html$h4,
 						_List_Nil,
 						_List_fromArray(
 							[
-								$elm$html$Html$text('SKU信息')
+								$elm$html$Html$text('添加SKU')
 							])),
 						A2(
-						$elm$html$Html$label,
-						_List_Nil,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$text('编码')
-							])),
-						A2(
-						$elm$html$Html$input,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('input'),
-								$elm$html$Html$Attributes$type_('text'),
-								$elm$html$Html$Events$onInput($author$project$Model$SearchProductById)
-							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$label,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('数量')
-							])),
-						A2(
-						$elm$html$Html$input,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('input'),
-								$elm$html$Html$Attributes$type_('number'),
-								$elm$html$Html$Attributes$value(
-								$elm$core$String$fromInt(count)),
-								$elm$html$Html$Events$onInput($author$project$Model$ProductCountInOrderChanged)
-							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('primary small'),
-								A2($elm$html$Html$Attributes$style, 'min-width', '80px'),
-								$elm$html$Html$Events$onClick($author$project$Model$AddNewItemToOrder)
+								$elm$html$Html$Attributes$class('ui segment')
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('添加')
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('two fields')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('field')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$label,
+												_List_Nil,
+												_List_fromArray(
+													[
+														$elm$html$Html$text('编码')
+													])),
+												A2(
+												$elm$html$Html$input,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$class('input'),
+														$elm$html$Html$Attributes$type_('text'),
+														$elm$html$Html$Events$onInput($author$project$Model$SearchProductById)
+													]),
+												_List_Nil)
+											])),
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('field')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$label,
+												_List_Nil,
+												_List_fromArray(
+													[
+														$elm$html$Html$text('数量')
+													])),
+												A2(
+												$elm$html$Html$input,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$class('input'),
+														$elm$html$Html$Attributes$type_('number'),
+														$elm$html$Html$Attributes$value(
+														$elm$core$String$fromInt(count)),
+														$elm$html$Html$Events$onInput($author$project$Model$ProductCountInOrderChanged)
+													]),
+												_List_Nil)
+											]))
+									])),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ui button')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('添加')
+									]))
 							]))
 					]))
 			]));
@@ -7468,8 +7463,7 @@ var $author$project$Page$NewOrder$inputForOrderItems = function (model) {
 			_List_Nil,
 			_List_fromArray(
 				[
-					A4($author$project$Page$NewOrder$inputProduct, prepare.productId, sku.name, sku.attr, prepare.count),
-					$author$project$Page$NewOrder$inputGift(model.giftList)
+					A4($author$project$Page$NewOrder$inputProduct, prepare.productId, sku.name, sku.attr, prepare.count)
 				]));
 	}
 };
@@ -7487,7 +7481,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$html$Html$Events$targetChecked = A2(
@@ -7504,6 +7497,8 @@ var $elm$html$Html$Events$onCheck = function (tagger) {
 var $author$project$Model$DeleteGift = function (a) {
 	return {$: 'DeleteGift', a: a};
 };
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Page$NewOrder$giftItem = function (item) {
@@ -7565,40 +7560,28 @@ var $author$project$Page$NewOrder$inputForOrderItem = function (item) {
 			[
 				A2(
 				$elm$html$Html$td,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '13px')
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						$elm$html$Html$text(item.sku.code)
 					])),
 				A2(
 				$elm$html$Html$td,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '13px')
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						$elm$html$Html$text(item.sku.name)
 					])),
 				A2(
 				$elm$html$Html$td,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '13px')
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						$elm$html$Html$text(item.sku.attr)
 					])),
 				A2(
 				$elm$html$Html$td,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'font-size', '13px')
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
@@ -7610,7 +7593,6 @@ var $author$project$Page$NewOrder$inputForOrderItem = function (item) {
 					[
 						$elm$html$Html$Events$onClick(
 						$author$project$Model$DeleteOrderItem(item.sku.code)),
-						A2($elm$html$Html$Attributes$style, 'font-size', '13px'),
 						A2($elm$html$Html$Attributes$style, 'text-decoration', 'underline')
 					]),
 				_List_fromArray(
@@ -7625,6 +7607,12 @@ var $author$project$Page$NewOrder$orderItemsTableBody = function (prepare) {
 	var giftList = A2($elm$core$List$map, $author$project$Page$NewOrder$giftItem, prepare.giftList);
 	var list = _Utils_ap(skuList, giftList);
 	return A2($elm$html$Html$tbody, _List_Nil, list);
+};
+var $elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		$elm$core$String$fromInt(n));
 };
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$html$Html$th = _VirtualDom_node('th');
@@ -7651,15 +7639,17 @@ var $author$project$Page$NewOrder$orderItemsTable = F2(
 						])),
 					A2(
 					$elm$html$Html$div,
-					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('ui segment')
+						]),
 					_List_fromArray(
 						[
 							A2(
 							$elm$html$Html$button,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('tertiary small'),
-									A2($elm$html$Html$Attributes$style, 'width', '80px'),
+									$elm$html$Html$Attributes$class('ui button'),
 									$elm$html$Html$Events$onClick($author$project$Model$PrintOrder)
 								]),
 							_List_fromArray(
@@ -7670,8 +7660,7 @@ var $author$project$Page$NewOrder$orderItemsTable = F2(
 							$elm$html$Html$button,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('secondary small'),
-									A2($elm$html$Html$Attributes$style, 'width', '80px'),
+									$elm$html$Html$Attributes$class('ui button'),
 									$elm$html$Html$Events$onClick($author$project$Model$ResetOrder)
 								]),
 							_List_fromArray(
@@ -7683,9 +7672,11 @@ var $author$project$Page$NewOrder$orderItemsTable = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$type_('checkbox'),
+									$elm$html$Html$Attributes$class('hidden'),
+									$elm$html$Html$Attributes$tabindex(0),
+									$elm$html$Html$Attributes$id('check-auto-clear-products'),
 									$elm$html$Html$Attributes$checked(autoClearProducts),
-									$elm$html$Html$Events$onCheck($author$project$Model$ResetAutoClearProductsInOrderAfterPrint),
-									A2($elm$html$Html$Attributes$style, 'margin-left', '12px')
+									$elm$html$Html$Events$onCheck($author$project$Model$ResetAutoClearProductsInOrderAfterPrint)
 								]),
 							_List_Nil),
 							A2(
@@ -7708,7 +7699,7 @@ var $author$project$Page$NewOrder$orderItemsTable = F2(
 							$elm$html$Html$table,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('table')
+									$elm$html$Html$Attributes$class('ui striped table')
 								]),
 							_List_fromArray(
 								[
@@ -7724,40 +7715,28 @@ var $author$project$Page$NewOrder$orderItemsTable = F2(
 												[
 													A2(
 													$elm$html$Html$th,
-													_List_fromArray(
-														[
-															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-														]),
+													_List_Nil,
 													_List_fromArray(
 														[
 															$elm$html$Html$text('商品编码')
 														])),
 													A2(
 													$elm$html$Html$th,
-													_List_fromArray(
-														[
-															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-														]),
+													_List_Nil,
 													_List_fromArray(
 														[
 															$elm$html$Html$text('名称')
 														])),
 													A2(
 													$elm$html$Html$th,
-													_List_fromArray(
-														[
-															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-														]),
+													_List_Nil,
 													_List_fromArray(
 														[
 															$elm$html$Html$text('属性')
 														])),
 													A2(
 													$elm$html$Html$th,
-													_List_fromArray(
-														[
-															A2($elm$html$Html$Attributes$style, 'font-size', '14px')
-														]),
+													_List_Nil,
 													_List_fromArray(
 														[
 															$elm$html$Html$text('数量')
@@ -7827,16 +7806,21 @@ var $author$project$Page$SkuList$skuItemTableBody = function (sku) {
 var $author$project$Page$SkuList$skuListTableView = function (model) {
 	return A2(
 		$elm$html$Html$div,
+		_List_Nil,
 		_List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'margin-top', '40px')
-			]),
-		_List_fromArray(
-			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('ui divider')
+					]),
+				_List_Nil),
 				A2(
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
+						$elm$html$Html$Attributes$class('ui button'),
 						$elm$html$Html$Events$onClick($author$project$Model$CsvRequested)
 					]),
 				_List_fromArray(
@@ -7847,8 +7831,7 @@ var $author$project$Page$SkuList$skuListTableView = function (model) {
 				$elm$html$Html$table,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('striped'),
-						A2($elm$html$Html$Attributes$style, 'width', '100%')
+						$elm$html$Html$Attributes$class('ui striped table')
 					]),
 				_List_fromArray(
 					[
@@ -7903,34 +7886,98 @@ var $author$project$App$mainContentView = function (model) {
 	var _v0 = model.page;
 	switch (_v0.$) {
 		case 'PageHome':
-			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
-		case 'PageSkuList':
 			return A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('main-content')
+					]),
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$h3,
-						_List_Nil,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$text('产品列表')
+								$elm$html$Html$Attributes$class('main-content-title')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ui medium header ')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('版本')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(model.version)
+									]))
+							]))
+					]));
+		case 'PageSkuList':
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('main-content')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('main-content-title')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ui medium header ')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('产品列表')
+									]))
 							])),
 						$author$project$Page$SkuList$skuListTableView(model)
 					]));
 		default:
 			return A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('main-content')
+					]),
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$h3,
-						_List_Nil,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$text('新配货单')
+								$elm$html$Html$Attributes$class('main-content-title')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ui medium header ')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('新配货单')
+									]))
 							])),
 						$author$project$Page$NewOrder$inputControlsForAddOrder(model)
 					]));
@@ -7939,62 +7986,85 @@ var $author$project$App$mainContentView = function (model) {
 var $author$project$Model$ToAddOrderPage = {$: 'ToAddOrderPage'};
 var $author$project$Model$ToShowSkuListPage = {$: 'ToShowSkuListPage'};
 var $elm$html$Html$a = _VirtualDom_node('a');
-var $elm$html$Html$Attributes$href = function (url) {
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var $elm$html$Html$nav = _VirtualDom_node('nav');
 var $author$project$App$menuView = function (model) {
 	return A2(
-		$elm$html$Html$nav,
-		_List_Nil,
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('left-main-menu')
+			]),
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$a,
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$href('#')
+						$elm$html$Html$Attributes$class('ui secondary vertical pointing menu')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('配货单管理')
-					])),
-				A2(
-				$elm$html$Html$a,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$href('#'),
-						$elm$html$Html$Attributes$class('sublink-1'),
-						$elm$html$Html$Events$onClick($author$project$Model$ToAddOrderPage)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('添加配货单')
-					])),
-				A2(
-				$elm$html$Html$a,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$href('#')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('产品管理')
-					])),
-				A2(
-				$elm$html$Html$a,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$href('#'),
-						$elm$html$Html$Attributes$class('sublink-1'),
-						$elm$html$Html$Events$onClick($author$project$Model$ToShowSkuListPage)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('产品列表')
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$a,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ui logo icon image')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$img,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$src('logo.png'),
+												$elm$html$Html$Attributes$id('menu-logo')
+											]),
+										_List_Nil)
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('ui divider')
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('item ui small header'),
+								$elm$html$Html$Events$onClick($author$project$Model$ToAddOrderPage)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('添加配货单')
+							])),
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('item ui small header'),
+								$elm$html$Html$Events$onClick($author$project$Model$ToShowSkuListPage)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('产品列表')
+							]))
 					]))
 			]));
 };
@@ -8003,7 +8073,7 @@ var $author$project$App$columnsView = function (model) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('row')
+				$elm$html$Html$Attributes$class('three column row')
 			]),
 		_List_fromArray(
 			[
@@ -8011,7 +8081,7 @@ var $author$project$App$columnsView = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('col-sm-2')
+						$elm$html$Html$Attributes$class('two wide column')
 					]),
 				_List_fromArray(
 					[
@@ -8021,8 +8091,7 @@ var $author$project$App$columnsView = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('col-sm-9'),
-						A2($elm$html$Html$Attributes$style, 'border-left', 'solid 1px rgba(100,100,100,0.3)')
+						$elm$html$Html$Attributes$class('twelve wide column')
 					]),
 				_List_fromArray(
 					[
@@ -8032,7 +8101,7 @@ var $author$project$App$columnsView = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('col-sm-1')
+						$elm$html$Html$Attributes$class('two wide column')
 					]),
 				_List_Nil)
 			]));
@@ -8042,7 +8111,7 @@ var $author$project$App$topLayout = function (model) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('container')
+				$elm$html$Html$Attributes$class('ui grid')
 			]),
 		_List_fromArray(
 			[

@@ -35,10 +35,11 @@ import Sku exposing (..)
 
 skuListTableView : Model -> Html Msg
 skuListTableView model =
-    div [ style "margin-top" "40px" ]
-        [ button [ onClick CsvRequested ] [ text "批量导入SKU" ]
+    div []
+        [ div [ class "ui divider" ] []
+        , button [ class "ui button", onClick CsvRequested ] [ text "批量导入SKU" ]
         , table
-            [ class "striped", style "width" "100%" ]
+            [ class "ui striped table" ]
             [ thead []
                 [ tr []
                     [ th [] [ text "编码" ]
